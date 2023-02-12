@@ -16,6 +16,6 @@ class ESCAPEROOM_API AMyPlayerController : public APlayerController
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = OurVariables)
-		float health = 1.0f;
+		float health = 7.0f;
 	
 };
