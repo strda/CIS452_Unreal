@@ -33,7 +33,7 @@ void AMyFirstCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AMyFirstCharacter::MoveRight);
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &AMyFirstCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AMyFirstCharacter::AddControllerPitchInput);
-	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, & AMyFirstCharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &AMyFirstCharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Released, this, &AMyFirstCharacter::StopJumping);
 
 }
