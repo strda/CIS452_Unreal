@@ -2,6 +2,8 @@
 
 
 #include "EnemyCharacter.h"
+#include "DodgeballProjectile.h"
+#include "TimerManager.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -15,11 +17,29 @@ AEnemyCharacter::AEnemyCharacter()
 
 }
 
+
 // Called when the game starts or when spawned
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AEnemyCharacter::ThrowDodgeball()
+{
+	if (DodgeballClass == nullptr)
+	{
+		return;
+	}
+
+	FVector ForwardVector = GetActorForwardVector();
+	float SpawnDistance = 40.f;
+	FVector SpawnLocation = GetActorLocation() + (ForwardVector* SpawnDistance);
+
+	//Spawn new dodgeball
+	GetWorld()->SpawnActor<ADodgeballProjectile>(DodgeballClass,
+		SpawnLocation, GetActorRotation());
+
 }
 
 // Called every frame
@@ -30,9 +50,25 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	//Fetch character currently controller by player
 	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
 	
-	//Look at player everyframe
-	LookAtActor(PlayerCharacter);
+	// Look at the player character every frame
+	bCanSeePlayer = LookAtActor(PlayerCharacter);
 
+	if (bCanSeePlayer != bPreviousCanSeePlayer)
+	{
+		if (bCanSeePlayer)
+		{
+			//Start throwing dodgeballs
+			GetWorldTimerManager().SetTimer(ThrowTimerHandle, this,
+				&AEnemyCharacter::ThrowDodgeball, ThrowingInterval, true, ThrowingDelay);
+		}
+		else
+		{
+			//Stop throwing dodgeballs
+			GetWorldTimerManager().ClearTimer(ThrowTimerHandle);
+		}
+	}
+
+	bPreviousCanSeePlayer = bCanSeePlayer;
 }
 
 // Called to bind functionality to input
@@ -42,9 +78,9 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 }
 
-void AEnemyCharacter::LookAtActor(AActor* TargetActor)
+bool AEnemyCharacter::LookAtActor(AActor* TargetActor)
 {
-	if (TargetActor == nullptr) return;
+	if (TargetActor == nullptr) return false;
 
 	if (CanSeeActor(TargetActor))
 	{
@@ -55,7 +91,9 @@ void AEnemyCharacter::LookAtActor(AActor* TargetActor)
 
 		//Set enemy's rotation to that rotation
 		SetActorRotation(LookAtRotation);
+		return true;
 	}
+	return false;
 }
 
 bool AEnemyCharacter::CanSeeActor(const AActor* const TargetActor)
