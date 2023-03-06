@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "DodgeballProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "TopDownCharacter.h"
-#include "DodgeballProjectile.h"
 
 // Sets default values
 ADodgeballProjectile::ADodgeballProjectile()
@@ -49,7 +49,7 @@ void ADodgeballProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 {
 	if (Cast<ATopDownCharacter>(OtherActor) != nullptr)
 	{
-		//Destroy();
+		Destroy();
 	}
 }
 
