@@ -52,12 +52,19 @@ void ADodgeballProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, BounceSound, GetActorLocation(), 1.0f, FMath::RandRange(.7f, 1.3f), 0.0f, BounceSoundAttenuation);
 	}
-	if (HitParticles != nullptr)
+
+	ATopDownCharacter* Player = Cast<ATopDownCharacter>(OtherActor);
+	if (Player != nullptr)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticles, GetActorTransform());
-	}
-	if (Cast<ATopDownCharacter>(OtherActor) != nullptr)
-	{
+		if (HitParticles != nullptr)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticles, GetActorTransform());
+		}
+		if (DamageSound != nullptr && NormalImpulse.Size() > 100.0f)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, DamageSound, GetActorLocation(), 1.0f, FMath::RandRange(.7f, 1.3f), 0.0f, BounceSoundAttenuation);
+		}
+
 		Destroy();
 	}
 }
