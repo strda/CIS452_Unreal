@@ -88,3 +88,7 @@ DerivedDataCache/*
 **/Intermediate/*
 **/Plugins/*/Intermediate/*
 **/DerivedDataCache/*
+
+# Ignore StarterContent and MedievalDungeon content folders
+**/Content/StarterContent/*
+**/Content/MedievalDungeon/*
